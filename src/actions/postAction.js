@@ -1,4 +1,11 @@
-import {FETCH_POSTS, NEW_POST, FETCH_POSTS_SUCCESS} from "./types";
+import {
+    FETCH_POSTS,
+    NEW_POST,
+    FETCH_POSTS_SUCCESS,
+    GET_POST_REQUEST,
+    SUCCESS_FETCH_POST,
+    GET_POST_FAILURE
+} from "./types";
 import Axios from "axios";
 
 export const fetchingPosts = () => ({
@@ -12,7 +19,7 @@ export const fetchPostsSuccess = posts => ({
 
 export const fetchPosts = () => dispatch => {
     dispatch(fetchingPosts());
-    return Axios.get("https://jsonplaceholder.typicode.com/todos/").then(response =>
+    return Axios.get("https://jsonplaceholder.typicode.com/posts").then(response =>
         dispatch(fetchPostsSuccess(response.data))
     );
 };
@@ -22,7 +29,7 @@ export const createPost = postData => dispatch => {
         "Content-Type": "application/json"
     };
     return Axios.post(
-        "https://jsonplaceholder.typicode.com/todos/",
+        "https://jsonplaceholder.typicode.com/posts",
         JSON.stringify(postData),
         {headers: headers}
     ).then(response =>
@@ -31,4 +38,19 @@ export const createPost = postData => dispatch => {
             payload: response.data
         })
     );
+};
+
+export const fetchSinglePost = id => dispatch => {
+    dispatch({
+        type: GET_POST_REQUEST
+    });
+    return Axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`)
+        .then(res => dispatch({
+            type: SUCCESS_FETCH_POST,
+            payload: res.data
+        }))
+        .catch(e => dispatch({
+            type: GET_POST_FAILURE,
+            payload: e
+        }));
 };

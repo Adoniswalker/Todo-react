@@ -1,7 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { fetchPosts } from "../actions/postAction";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {fetchPosts} from "../actions/postAction";
 import PropTypes from "prop-types";
+import PosstForm from "./postform";
+import {Link} from 'react-router-dom';
+import {loadingAnimation} from "./post";
 class Posts extends Component {
     componentDidMount() {
         this.props.fetchPosts();
@@ -12,18 +15,23 @@ class Posts extends Component {
             this.props.posts.unshift(newProps.newPost);
         }
     }
+
     render() {
-        const { posts, loading } = this.props;
+        const {posts, loading} = this.props;
         const postList = posts.map(post => (
-            <div key={post.id}>
-                <h2>{post.id}</h2>
-                <b>{post.title}</b>
+            <div className="card m-5" key={post.id}>
+                <div className="card-body">
+                    <h4 className="card-title"><Link to={`posts/${post.id}`}>{post.title}</Link></h4>
+                    <p className="card-text">{post.body}</p>
+                </div>
             </div>
         ));
         return (
             <div>
+                <PosstForm/>
+                <div className="w-100"></div>
                 <h1>Post class</h1>
-                {loading ? "Loading" : postList}
+                {loading ? loadingAnimation : postList}
             </div>
         );
     }
